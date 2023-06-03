@@ -3,14 +3,10 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:meta/meta.dart';
 import 'package:video_player_platform_interface/video_player_platform_interface.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -265,9 +261,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
     String finalYoutubeUrl = dataSource;
     if (_getIdFromUrl(dataSource) != null) {
       try {
-        Map<String, String> videoUrls = Map();
         String? _videoId = _getIdFromUrl(dataSource);
-        String _fetchUrl = "";
 
         var yt = YoutubeExplode();
 
@@ -308,6 +302,8 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           sourceType: DataSourceType.file,
           uri: dataSource,
         );
+        break;
+      case DataSourceType.contentUri:
         break;
     }
 
@@ -351,6 +347,8 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
           break;
         case VideoEventType.unknown:
           break;
+        case VideoEventType.isPlayingStateUpdate:
+          break;
       }
     }
 
@@ -386,7 +384,7 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
       RegExp(r'^https:\/\/youtu\.be\/([_\-a-zA-Z0-9]{11}).*$')
     ];
 
-    if (url == null || url.isEmpty) {
+    if (url.isEmpty) {
       return null;
     }
 
@@ -587,7 +585,6 @@ class VideoPlayerController extends ValueNotifier<VideoPlayerValue> {
       return Caption();
     }
 
-    // TODO: This would be more efficient as a binary search.
     for (final caption in _closedCaptionFile!.captions) {
       if (caption.start! <= position! && caption.end! >= position) {
         return caption;
@@ -610,7 +607,7 @@ class _VideoAppLifeCycleObserver extends Object with WidgetsBindingObserver {
   final VideoPlayerController _controller;
 
   void initialize() {
-    WidgetsBinding.instance!.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -630,7 +627,7 @@ class _VideoAppLifeCycleObserver extends Object with WidgetsBindingObserver {
   }
 
   void dispose() {
-    WidgetsBinding.instance!.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
   }
 }
 

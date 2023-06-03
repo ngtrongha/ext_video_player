@@ -53,7 +53,7 @@ void configurePigeon(PigeonOptions opts) {
     objcOptions: ObjcOptions(
       prefix: 'FLT',
       copyrightHeader: opts.objcOptions!.copyrightHeader,
-      header: opts.objcOptions!.header,
+      headerIncludePath: opts.objcOptions!.headerIncludePath,
     ),
     javaOut:
         'android/src/main/java/io/flutter/plugins/videoplayer/Messages.java',
